@@ -22,7 +22,6 @@ export default class AuthController {
 
   static async login(req: Request, res: Response) {
     const errorMap = await validate(loginValidate)(req);
-    console.log(req.body);
 
     if (errorMap) {
       return res.render("./login", {

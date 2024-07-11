@@ -3,4 +3,4 @@ import { DashboardController } from "../controllers/dashboard.controller";
 export const dashboardRouter = express.Router();
 
 dashboardRouter.get("/", DashboardController.dashboardPage);
-dashboardRouter.get("/create", DashboardController.addPage);
+// dashboardRouter.get("/create", DashboardController.addPage);

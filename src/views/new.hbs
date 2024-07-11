@@ -1,100 +1,150 @@
 <div>
   <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-      <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Add a new
-        product</h2>
-      <form action="#">
-        <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+      <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">{{#if isEdit}} Update {{else}} Create {{/if}} 
+      </h2>
+      <form action="{{#if isEdit}}/update/{{_id}}?_method=PUT{{else}}/create{{/if}}" method="post">
+        <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 items-end">
           <div class="sm:col-span-2">
             <label
               for="name"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Product Name</label>
+            >Section name</label>
             <input
               type="text"
-              name="name"
+              name="sectionName"
+              value="{{sectionName}}"
               id="name"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Type product name"
+              placeholder="Type section name"
               required=""
             />
+            {{#if validationError.sectionName}}
+              <p
+                class="text-red-500 text-xs italic py-2"
+              >{{validationError.sectionName}}</p>
+            {{/if}}
           </div>
           <div class="w-full">
             <label
-              for="brand"
+              for="duration"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Brand</label>
-            <input
-              type="text"
-              name="brand"
-              id="brand"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Product brand"
-              required=""
-            />
-          </div>
-          <div class="w-full">
-            <label
-              for="price"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Price</label>
+            >Duration</label>
             <input
               type="number"
-              name="price"
-              id="price"
+              name="duration"
+              id="duration"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="$2999"
+              placeholder="Duration"
               required=""
+              value="{{duration}}"
             />
+            {{#if validationError.duration}}
+              <p
+                class="text-red-500 text-xs italic py-2"
+              >{{validationError.duration}}</p>
+            {{/if}}
+          </div>
+          <div class="w-full">
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                value="true"
+                name="isMainTask"
+                class="sr-only peer"
+                {{#if isMainTask}} checked {{/if}}
+              />
+              <div
+                class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+              ></div>
+              <span
+                class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+              >Is main task</span>
+            </label>
+            {{#if validationError.isMainTask}}
+              <p
+                class="text-red-500 text-xs italic py-2"
+              >{{validationError.isMainTask}}</p>
+            {{/if}}
           </div>
           <div>
             <label
-              for="category"
+              for="course"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Category</label>
+            >Course</label>
             <select
-              id="category"
+              name="course"
+              id="course"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             >
-              <option selected="">Select category</option>
+              <option value="">Select course</option>
+              {{#if subList}}
+                {{#each subList}}
+                  <option value="{{this._id}}" {{#if (eq @root.course this._id)}} selected {{/if}}>{{this.courseName}}</option>
+                {{/each}}
+
+              {{/if}}
+              {{! <option selected="">Select course</option>
               <option value="TV">TV/Monitors</option>
               <option value="PC">PC</option>
               <option value="GA">Gaming/Console</option>
-              <option value="PH">Phones</option>
+              <option value="PH">Phones</option> }}
             </select>
+            {{#if validationError.course}}
+              <p
+                class="text-red-500 text-xs italic py-2"
+              >{{validationError.course}}</p>
+            {{/if}}
           </div>
-          <div>
-            <label
-              for="item-weight"
-              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Item Weight (kg)</label>
-            <input
-              type="number"
-              name="item-weight"
-              id="item-weight"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="12"
-              required=""
-            />
-          </div>
+
           <div class="sm:col-span-2">
             <label
-              for="description"
+              for="sectionDescription"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Description</label>
+            >Section description</label>
             <textarea
-              id="description"
+              id="sectionDescription"
               rows="8"
+              name="sectionDescription"
               class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-              placeholder="Your description here"
-            ></textarea>
+              placeholder="Your section description"
+            >{{sectionDescription}}</textarea>
+            {{#if validationError.sectionDescription}}
+              <p
+                class="text-red-500 text-xs italic py-2"
+              >{{validationError.sectionDescription}}</p>
+            {{/if}}
           </div>
+
         </div>
+        {{#if errorMessage}}
+          <div
+            class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <svg
+              class="flex-shrink-0 inline w-4 h-4 me-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+              />
+            </svg>
+            <span class="sr-only">Error message</span>
+            <div>
+              <span class="font-medium">Alert !</span>
+              {{errorMessage}}
+            </div>
+          </div>
+        {{/if}}
         <button
           type="submit"
           class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
         >
-          Add product
+          Save
         </button>
       </form>
     </div>
