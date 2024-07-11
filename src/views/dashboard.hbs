@@ -1,0 +1,108 @@
+<div class="max-w-7xl mx-auto p-10">
+  {{#if errorMessage}}
+    <div
+      class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+      role="alert"
+    >
+      <svg
+        class="flex-shrink-0 inline w-4 h-4 me-3"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path
+          d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+        />
+      </svg>
+      <span class="sr-only">Error message</span>
+      <div>
+        <span class="font-medium">Alert !</span>
+        {{errorMessage}}
+      </div>
+    </div>
+  {{/if}}
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <a href="/create" class="ml-auto">
+      <button
+        class="px-4 py-2 my-4 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 shadow-lg"
+      >
+        Add New
+      </button>
+    </a>
+    <table
+      class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+    >
+      <thead
+        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+      >
+        <tr>
+          <th scope="col" class="px-6 py-3">
+            Section name
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Section description
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Duration
+          </th>
+          <th scope="col" class="px-6 py-3">
+            IsMainTask
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Course
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Actions
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#if list.length}}
+          {{#each list}}
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th
+                scope="row"
+                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              >
+                {{this.sectionName}}
+              </th>
+              <td scope="row" class="px-6 py-4">
+                {{this.sectionDescription}}
+              </td>
+              <td class="px-6 py-4">
+                {{this.duration}}
+              </td>
+              <td class="px-6 py-4">
+                {{this.isMainTask}}
+              </td>
+              <td class="px-6 py-4">
+                {{this.course.courseName}}
+              </td>
+              <td class="px-6 py-4">
+                <a
+                  href="#"
+                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >Edit</a>
+              </td>
+              <td class="px-6 py-4">
+                <a
+                  href="#"
+                  class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >Delete</a>
+              </td>
+            </tr>
+          {{/each}}
+        {{else}}
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            Not Found
+          </tr>
+        {{/if}}
+      </tbody>
+    </table>
+  </div>
+
+</div>
