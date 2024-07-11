@@ -62,7 +62,6 @@ app.engine(
   })
 );
 
-app.use(parseToken);
 app.use("/", router);
 
 app.listen(AppConfig.PORT, async () => {

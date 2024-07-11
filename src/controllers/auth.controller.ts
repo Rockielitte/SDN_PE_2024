@@ -76,11 +76,88 @@ export default class AuthController {
     if (existUser)
       return res.render("./register", {
         errorMessage: "Username already exist",
-        ...registerDTO,
+        ...req.body,
       });
 
     registerDTO.password = await hashPassword(registerDTO.password);
     await userModel.create(registerDTO);
     res.redirect("/login");
+  }
+  //API part
+  static async loginApi(req: Request, res: Response) {
+    try {
+      const errorMap = await validate(loginValidate)(req);
+
+      if (errorMap) {
+        return res.status(400).json({
+          error: errorMap,
+        });
+      }
+
+      const { username, password } = req.body;
+      const user = await userModel.findOne({ username });
+      if (!user) {
+        return res.status(400).json({
+          errorMessage: "Username does not exist or password is incorrect",
+        });
+      }
+      const isMatch = await isPasswordMatch(password, user.password);
+
+      if (!isMatch) {
+        return res.status(400).json({
+          error: "Username does not exist or password is incorrect",
+        });
+      }
+      const token = signToken({ userId: user._id });
+      return res.json({
+        message: "Login successfullly",
+        data: {
+          accessToken: token,
+        },
+      });
+    } catch (err) {
+      return res.status(500).json({
+        errorMessage: err.message,
+      });
+    }
+  }
+  static async logoutApi(req: Request, res: Response) {
+    res.clearCookie("accessToken");
+    return res.json({
+      message: "Logout successfully",
+    });
+  }
+  static async registerApi(req: Request, res: Response) {
+    try {
+      const errorMap = await validate(registerValidate)(req);
+
+      if (errorMap) {
+        return res.status(400).json({
+          error: errorMap,
+        });
+      }
+      const { username, password } = req.body;
+      const registerDTO: User = {
+        username,
+        password,
+      };
+      const existUser = await userModel.findOne({
+        username,
+      });
+      if (existUser)
+        return res.status(400).json({
+          errorMessage: "Username already exist",
+        });
+
+      registerDTO.password = await hashPassword(registerDTO.password);
+      await userModel.create(registerDTO);
+      return res.json({
+        message: "Register successfully",
+      });
+    } catch (err) {
+      return res.status(500).json({
+        errorMessage: err.message,
+      });
+    }
   }
 }

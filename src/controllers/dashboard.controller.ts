@@ -1,13 +1,16 @@
 import express, { Request, Response, NextFunction } from "express";
-import { sectionModel } from "../models/section.model";
-import { courseModel } from "../models/course.model";
+
 import validate from "../validate/validate";
 import { itemValidate } from "../validate/item.validate";
+import { isValid } from "zod";
+import { isValidId } from "../utils";
+import { itemModel } from "../models/item.model";
+import { subItemModel } from "../models/subItem.model";
 export class DashboardController {
   static async dashboardPage(req: Request, res: Response, next: NextFunction) {
     try {
-      const list = await sectionModel.find({}).populate("course").lean();
-      const subList = await courseModel.find({}).lean();
+      const list = await itemModel.find({}).populate("course").lean();
+      const subList = await subItemModel.find({}).lean();
       return res.render("./dashboard", {
         errorMessage: "",
         list: list,
@@ -23,7 +26,7 @@ export class DashboardController {
     }
   }
   static async addPage(req: Request, res: Response, next: NextFunction) {
-    const subList = await courseModel.find({}).lean();
+    const subList = await subItemModel.find({}).lean();
     return res.render("./new", {
       subList: subList,
     });
@@ -32,7 +35,7 @@ export class DashboardController {
     console.log(req.body);
 
     try {
-      const subList = await courseModel.find({}).lean();
+      const subList = await subItemModel.find({}).lean();
       const errorMap = await validate(itemValidate)(req);
       if (errorMap) {
         return res.render("./new", {
@@ -41,7 +44,7 @@ export class DashboardController {
           subList: subList,
         });
       }
-      const item = await sectionModel.create({
+      const item = await itemModel.create({
         ...req.body,
         isMainTask: req.body.isMainTask ? true : false,
       });
@@ -55,12 +58,16 @@ export class DashboardController {
   }
   static async updatePage(req: Request, res: Response, next: NextFunction) {
     try {
-      const subList = await courseModel.find({}).lean();
-      const item = await sectionModel
+      const isValid = isValidId(req.params.id);
+      if (!isValid)
+        return res.render("./new", {
+          errorMessage: "Item not found!",
+        });
+      const subList = await subItemModel.find({}).lean();
+      const item = await itemModel
         .findById(req.params.id)
         .populate("course")
         .lean();
-      console.log(item, "dsaf");
 
       if (!item) {
         return res.render("./dashboard", {
@@ -82,9 +89,12 @@ export class DashboardController {
   }
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req.body, "dsaf");
+      if (!isValid)
+        return res.render("./new", {
+          errorMessage: "Item not found!",
+        });
 
-      const subList = await courseModel.find({}).lean();
+      const subList = await subItemModel.find({}).lean();
       const errorMap = await validate(itemValidate)(req);
       if (errorMap) {
         return res.render("./new", {
@@ -95,9 +105,9 @@ export class DashboardController {
           isEdit: true,
         });
       }
-      const item = await sectionModel.findById(req.params.id);
+      const item = await itemModel.findById(req.params.id);
       if (!item) {
-        return res.render("./dashboard", {
+        return res.render("./new", {
           errorMessage: "Item not found!",
         });
       }
@@ -115,7 +125,12 @@ export class DashboardController {
   }
   static async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const item = await sectionModel.findById(req.params.id);
+      if (!isValid)
+        return res.render("./404", {
+          errorMessage: "Item not found!",
+        });
+
+      const item = await itemModel.findById(req.params.id);
       if (!item) {
         return res.render("./dashboard", {
           errorMessage: "Item not found!",

@@ -11,4 +11,4 @@ const courseSchema = mongoose.Schema({
   },
 });
 
-export const courseModel = mongoose.model("Course", courseSchema);
+export const subItemModel = mongoose.model("Course", courseSchema);
